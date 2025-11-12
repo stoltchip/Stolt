@@ -30,9 +30,7 @@ async function sha256Hex(message) {
   return hashHex;
 }
 
-function isLogged(){
-  return localStorage.getItem('admin_ok')==='1';
-}
+function isLogged(){ return localStorage.getItem('admin_ok')==='1'; }
 
 async function tryAutoLogin(){
   if(isLogged()){
@@ -74,7 +72,8 @@ async function loadLocations(){
   const { data, error } = await supabase.from('locations').select('*').order('name');
   if(error){ alert('Fout bij laden locaties: '+error.message); return; }
   locations = data||[];
-  locSelect.innerHTML = locations.map(l=>`<option value="\${l.id}">\${l.name}</option>`).join('');
+  // <-- FIX tu był błąd: usuń backslash przed ${...}
+  locSelect.innerHTML = locations.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
 }
 
 async function loadProductsAndVariants(){
@@ -93,9 +92,7 @@ async function loadStockForLocation(location_id){
   (data||[]).forEach(r=> stock.set(`${r.variant_id}::${r.location_id}`, r.qty));
 }
 
-function qtyOf(variant_id, location_id){
-  return stock.get(`${variant_id}::${location_id}`) ?? 0;
-}
+function qtyOf(variant_id, location_id){ return stock.get(`${variant_id}::${location_id}`) ?? 0; }
 
 async function renderTable(){
   stockBody.innerHTML='';
@@ -103,16 +100,10 @@ async function renderTable(){
   if(!location_id) return;
   await loadStockForLocation(location_id);
 
-  // join variants -> product name
   const rows = variants.map(v=>{
     const prod = products.find(p=>p.id===v.product_id);
     const qty = qtyOf(v.id, location_id);
-    return {
-      variant_id: v.id,
-      product_name: prod?prod.name:'—',
-      size: v.size,
-      qty
-    };
+    return { variant_id: v.id, product_name: (prod?prod.name:'—'), size: v.size, qty };
   }).sort((a,b)=> a.product_name.localeCompare(b.product_name) || (''+a.size).localeCompare(''+b.size));
 
   for(const r of rows){
@@ -162,16 +153,13 @@ async function onNieuwProduct(){
   const { data: createdVars, error: e2 } = await supabase.from('product_variants').insert(toInsert).select('*');
   if(e2){ alert('Fout bij varianten: '+e2.message); return; }
 
-  // create stock rows for selected location
   const stockRows = createdVars.map(v=>({ variant_id: v.id, location_id, qty: start }));
   const { error: e3 } = await supabase.from('variant_stock').insert(stockRows);
   if(e3){ alert('Varianten aangemaakt, maar voorraad niet: '+e3.message); }
 
   alert('Nieuw product toegevoegd.');
-  // refresh lists
   await loadProductsAndVariants();
   await renderTable();
-  // clear form
   npNaam.value = npDesc.value = npImage.value = npMaten.value = '';
 }
 
