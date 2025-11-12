@@ -1,31 +1,45 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Magazijn – Werknemer</title>
+
+  <!-- WAŻNE: załaduj style -->
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="icon" href="./img/stolt_nielsen_logo.png">
+</head>
 <body>
   <header>
-    <img src="img/logo.png" alt="Stolt-Nielsen logo" style="height:32px">
+    <img src="./img/stolt_nielsen_logo.png" alt="Stolt-Nielsen logo">
     <h1>Stolt Haven Moerdijk – Werknemer</h1>
-    <button id="toggleTheme">Licht thema</button>
+    <span class="badge">Licht thema</span>
   </header>
 
-  <main style="max-width:800px;margin:auto;padding:16px">
-    <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:16px">
-      <label>
-        Locatie:
+  <main class="container">
+    <div class="row" style="justify-content:space-between">
+      <div class="row">
+        <label for="locSelect">Locatie:</label>
         <select id="locSelect"></select>
-      </label>
-      <label>
-        Naam:
-        <input type="text" id="naamInput" placeholder="Jouw naam">
-      </label>
+      </div>
+      <div class="row">
+        <label for="naamInput">Naam:</label>
+        <input id="naamInput" type="text" placeholder="Jouw naam">
+      </div>
     </div>
 
-    <div id="info" style="margin-bottom:12px;color:#6b7280"></div>
+    <p class="notice" id="info">Kies een locatie om de voorraad te laden.</p>
 
-    <!-- TU ŁADUJĄ SIĘ KARTY PRODUKTÓW -->
     <div id="productsGrid" class="grid"></div>
 
-    <div style="margin-top:32px">
-      <a href="admin.html">→ Beheer (admin)</a>
+    <div style="margin-top:24px">
+      <a href="./admin.html">→ Beheer (admin)</a>
     </div>
   </main>
 
-  <script type="module" src="script.employee.locations.js"></script>
+  <!-- WAŻNE: kolejność -->
+  <script type="module" src="./config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="./script.employee.locations.js"></script>
 </body>
+</html>
