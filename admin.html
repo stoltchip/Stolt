@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beheer – Magazijn | Stolt Haven Moerdijk</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap container">
+      <div class="brand">
+        <img src="img/stolt_nielsen_logo.png" alt="Stolt-Nielsen" class="logo" />
+        <div class="titles">
+          <h1>Beheer – Magazijn</h1>
+          <p class="subtitle">Toegang via PIN</p>
+        </div>
+      </div>
+      <nav><a href="index.html" class="btn">Terug</a></nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:12px">
+    <section id="loginSection" class="section" style="max-width:520px;margin:0 auto">
+      <h3>Inloggen</h3>
+      <div class="controls" style="padding:0">
+        <label>PIN (4–6 cijfers)
+          <input id="pinInput" type="password" maxlength="6" placeholder="bijv. 2468" required>
+        </label>
+        <button class="btn primary" id="loginBtn" type="button">Inloggen</button>
+      </div>
+      <p id="loginMsg" class="small"></p>
+    </section>
+
+    <section id="appSection" class="hidden">
+      <div class="controls">
+        <label>Locatie:
+          <select id="adminLocationSelect"></select>
+        </label>
+        <button id="addLocationBtn" class="btn" type="button">+ Nieuwe locatie</button>
+      </div>
+
+      <h3>Voorraad (per locatie)</h3>
+      <div id="inventoryTableWrap" class="section">
+        <!-- table renders here -->
+      </div>
+
+      <h3 style="margin-top:20px">Nieuw product</h3>
+      <form id="addProductForm" class="section" style="display:grid;gap:12px">
+        <label>Naam<input id="newName" required></label>
+        <label>Beschrijving (NL)<textarea id="newDesc" required></textarea></label>
+        <label>Afbeelding (URL of leeg)<input id="newImage" placeholder="https://..."></label>
+        <label>Maten (komma's)<input id="newSizes" placeholder="S,M,L of 39,40" required></label>
+        <label>Startvoorraad per maat<input id="newQty" type="number" value="3" min="0" required></label>
+        <button class="btn primary" type="submit">Toevoegen</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> Stolt Haven Moerdijk</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="script.admin.locations.js"></script>
+</body>
+</html>
