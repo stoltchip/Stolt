@@ -1,1 +1,55 @@
-(()=>{const $=s=>document.querySelector(s);$('#year').textContent=new Date().getFullYear();const cfg=window.SUPABASE_CONFIG||{};const sb=window.supabase.createClient(cfg.url,cfg.anonKey);const bucket=cfg.storageBucket||'product-images';let products=[],variants=[];async function sha256(t){const e=new TextEncoder().encode(t),b=await crypto.subtle.digest('SHA-256',e);return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}async function checkLogin(pw,pin){const r=await sb.from('settings').select('*').limit(1).maybeSingle();if(r.error||!r.data)return false;return (await sha256(pw))===r.data.admin_password_sha256 && (await sha256(pin))===r.data.admin_pin_sha256;}$('#loginForm').addEventListener('submit',async e=>{e.preventDefault();const ok=await checkLogin($('#pw').value,$('#pin').value);if(!ok){$('#loginMsg').textContent='Onjuist wachtwoord of PIN.';return;}$('#loginBox').classList.add('hidden');$('#adminPanel').classList.remove('hidden');render();});async function load(){const p=await sb.from('products').select('*').order('name');const v=await sb.from('product_variants').select('*');products=p.data||[];variants=v.data||[];}const sizes=pid=>{const m={};(variants||[]).filter(v=>v.product_id===pid).forEach(v=>m[v.size]=v.qty||0);return m;};async function render(){await load();const wrap=$('#inventoryTableWrap');const rows=[];products.forEach(p=>{const sm=sizes(p.id);Object.entries(sm).forEach(([s,q])=>rows.push(`<tr data-id="${p.id}" data-size="${s}"><td>${p.name||''}</td><td>${s}</td><td><strong>${q}</strong></td><td><button class="btn small" data-action=inc>+1</button> <button class="btn small" data-action=dec>−1</button></td></tr>`));});wrap.innerHTML=`<table><thead><tr><th>Product</th><th>Maat</th><th>Voorraad</th><th>Acties</th></tr></thead><tbody>${rows.join('')}</tbody></table>`;}$('#inventoryTableWrap').addEventListener('click',async e=>{const b=e.target.closest('button[data-action]');if(!b)return;const tr=b.closest('tr');const id=tr.dataset.id,size=tr.dataset.size;const delta=b.dataset.action==='inc'?1:-1;await sb.rpc('adjust_variant_qty',{p_product_id:id,p_size:size,p_delta:delta});render();});$('#addProductForm').addEventListener('submit',async e=>{e.preventDefault();const name=$('#newName').value.trim(),desc=$('#newDesc').value.trim(),sizes=$('#newSizes').value.split(',').map(s=>s.trim()).filter(Boolean),qty=Math.max(0,Number($('#newQty').value)||0);let imageUrl='';const f=$('#newImage').files[0];if(f){const key=`prod_${Date.now()}_${f.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;const up=await sb.storage.from(bucket).upload(key,f,{upsert:false});if(up.error){alert('Upload fout');return;}imageUrl=sb.storage.from(bucket).getPublicUrl(key).data.publicUrl;}const prod=await sb.from('products').insert({name,descnl:desc,image:imageUrl,is_active:true}).select('*').single();if(prod.error){alert('Product fout');return;}const toIns=sizes.map(s=>({product_id:prod.data.id,size:s,qty}));const ins=await sb.from('product_variants').insert(toIns);if(ins.error){alert('Varianten fout');return;}e.target.reset();alert('Product toegevoegd.');render();});})();
+// === ADMIN PANEL – LOGIN ONLY BY PIN ===
+
+// Connect to Supabase
+const { createClient } = window.supabase;
+const supabase = createClient(
+  window.SUPABASE_CONFIG.url,
+  window.SUPABASE_CONFIG.anonKey
+);
+
+const loginSection = document.getElementById("login-section");
+const appSection = document.getElementById("app-section");
+
+const pinInput = document.getElementById("adminPin");
+const loginButton = document.getElementById("loginButton");
+
+async function checkPin() {
+  const pin = pinInput.value.trim();
+  if (!pin) {
+    alert("Voer de PIN in.");
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("settings")
+    .select("admin_pin_sha256")
+    .eq("id", 1)
+    .single();
+
+  if (error) {
+    console.error(error);
+    alert("Fout bij het laden van de PIN.");
+    return;
+  }
+
+  const hashedPin = await hashSHA256(pin);
+  if (hashedPin === data.admin_pin_sha256) {
+    loginSection.style.display = "none";
+    appSection.style.display = "block";
+    loadProducts();
+  } else {
+    alert("Onjuiste PIN!");
+  }
+}
+
+async function hashSHA256(text) {
+  const msgBuffer = new TextEncoder().encode(text);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  return hashHex;
+}
+
+loginButton.addEventListener("click", checkPin);
+
+// === REST OF ADMIN FUNCTIONS (same as before) ===
