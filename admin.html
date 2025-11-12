@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Magazijn – Beheer</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="icon" href="./img/stolt_nielsen_logo.png">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="./img/stolt_nielsen_logo.png" alt="Stolt-Nielsen logo">
+      <h1>Stolt Haven Moerdijk – Beheer</h1>
+      <span class="badge">PIN alleen (2468)</span>
+    </div>
+
+    <div id="loginBox" class="card">
+      <div class="row" style="gap:8px;flex-wrap:wrap">
+        <label for="pinInput">PIN:</label>
+        <input id="pinInput" type="password" placeholder="****" inputmode="numeric" pattern="[0-9]*">
+        <button id="btnLogin">Inloggen</button>
+      </div>
+      <p class="notice">De PIN wordt lokaal vergeleken met de SHA-256 hash in de instellingentabel.</p>
+    </div>
+
+    <div id="adminPanel" class="hidden">
+      <div class="row" style="justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div class="row" style="gap:8px">
+          <label for="locSelectAdmin">Locatie:</label>
+          <select id="locSelectAdmin"></select>
+        </div>
+        <div class="row" style="gap:8px">
+          <button id="btnLogout" class="secondary">Uitloggen</button>
+        </div>
+      </div>
+
+      <h3 class="section-title">Voorraad per variant</h3>
+      <table class="table" id="stockTable">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Maat</th>
+            <th>Voorraad</th>
+            <th>Acties</th>
+          </tr>
+        </thead>
+        <tbody id="stockBody"></tbody>
+      </table>
+
+      <h3 class="section-title">Nieuw product</h3>
+      <div class="card">
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <input id="npNaam" type="text" placeholder="Naam">
+          <input id="npDesc" type="text" placeholder="Beschrijving (NL)">
+          <input id="npImage" type="text" placeholder="Afbeelding (URL)">
+          <input id="npMaten" type="text" placeholder="Maten (bv. S,M,L,XL of 39,40,41)">
+          <input id="npStart" type="number" placeholder="Startvoorraad" value="3" min="0">
+          <button id="btnNieuwProduct">Toevoegen</button>
+        </div>
+        <p class="notice">Wordt aangemaakt voor de geselecteerde locatie. Variants + startvoorraad worden automatisch toegevoegd.</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <a href="./index.html">← Werknemer</a>
+    </div>
+  </div>
+
+  <script type="module" src="./config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="./script.admin.locations.js"></script>
+</body>
+</html>
