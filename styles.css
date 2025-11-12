@@ -1,91 +1,52 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #0f172a;
+  font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+  background-color: #0f172a; /* tło ciemne */
   color: #f1f5f9;
   margin: 0;
-  padding: 0;
 }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 16px; }
 
 header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 24px;
-  background-color: #1e293b;
-  border-bottom: 1px solid #334155;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-bottom: 1px solid #334155;
+  background: #111827;
 }
 
-header img {
-  height: 28px;
-}
+header img { height: 28px; }
+header h1 { margin: 0; font-size: 18px; font-weight: 700; }
 
-h1 {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0;
-}
-
-main {
-  padding: 24px;
-  max-width: 1000px;
-  margin: auto;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-}
+.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-top: 24px;
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+  gap: 16px; margin-top: 24px;
 }
 
 .card {
-  background-color: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 14px; padding: 16px;
+  box-shadow: 0 0 10px rgba(0,0,0,.3);
 }
 
-.card img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.btnBestel {
-  background-color: #eab308;
-  color: #111;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.2s;
-}
-
-.btnBestel:hover {
-  background-color: #facc15;
-}
+.card img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
 
 select, input {
-  background-color: #334155;
-  border: 1px solid #475569;
-  color: #f8fafc;
-  border-radius: 6px;
-  padding: 6px 8px;
+  background-color: #111827; border: 1px solid #374151; color: #e5e7eb;
+  border-radius: 8px; padding: 8px 10px;
 }
 
-.badge {
-  background-color: #475569;
-  color: #f8fafc;
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  display: inline-block;
+button {
+  background: #eab308; color: #111827; border: none; border-radius: 10px;
+  padding: 10px 14px; cursor: pointer; font-weight: 700;
 }
+button:hover { background: #facc15; }
+
+.badge {
+  display: inline-block; background: #374151; color: #e5e7eb;
+  font-size: 12px; padding: 4px 8px; border-radius: 999px; margin-top: 6px;
+}
+
+.notice { color: #9ca3af; margin: 10px 0; }
+a { color: #93c5fd; }
